@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up</title>
+    <link rel="stylesheet" href="Style.css">
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h3>Create Account</h3>
+        </div>
+        <div class="form">
+            <form id="signup">
+                <label for="name">Name</label>
+                <input type="text" id="name" name="name" placeholder="Enter your name">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" placeholder="Enter your email">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" placeholder="Enter your password">
+                <label for="remember-me">
+                    <input type="checkbox" id="remember-me" name="remember-me">
+                    Remember me
+                </label>
+                <button type="submit" class="btn">Sign Up</button>
+            </form>
+            <p>Already have an account? <a href="./Login.html">Login</a></p>
+        </div>
+    </div>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getDatabase, set, ref, child, update, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js"
+       
+        const firebaseConfig = {
+          apiKey: "AIzaSyArilZYdtYQzGfttFvVIUVSOiwxWjPCIJ0",
+          authDomain: "fb-dm-helpdesk-ecb87.firebaseapp.com",
+          databaseURL: "https://fb-dm-helpdesk-ecb87-default-rtdb.firebaseio.com",
+          projectId: "fb-dm-helpdesk-ecb87",
+          storageBucket: "fb-dm-helpdesk-ecb87.appspot.com",
+          messagingSenderId: "991316109812",
+          appId: "1:991316109812:web:e4e8b26665421d28a5b1a1",
+          measurementId: "G-TYKXD7CSFV"
+        };
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase()
+
+        // console.log(getDatabase);
+        let userData = {}
+        document.getElementById("signup").addEventListener("input", (event) => {
+            let value = event.target.value
+            let name = event.target.name
+            userData[name] = value
+        })
+        async function addData() {
+            let response = await set(ref(db, "Users/" + userData.name), {
+                ...userData
+            })
+            return response
+        }
+        document.getElementById("signup").addEventListener("submit", (event) => {
+            event.preventDefault()
+            const { name, email, password } = userData
+            if (name && email && password) {
+                addData().then((data) => {
+                    event.target.reset()
+                    window.location.href = "./Login.html"
+                })
+                    .catch(err => console.log(err))
+
+            } else {
+                alert("fill all the fields before submition")
+            }
+        })
+
+    </script>
+</body>
+
+</html>
